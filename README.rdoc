@@ -1,5 +1,5 @@
 This is a gem version of http://github.com/avdgaag/acts_as_publishable ( a Rails plugin)
-Thanks to Arjan van der Gaag for his awesome, super readable code which I ripped off for this gem.
+Thanks to Arjan van der Gaag for his original work in that plugin, which this gem is heavily based off.
 
 His plugin is Copyright (c) 2007 Arjan van der Gaag, released under the MIT license
 
@@ -17,15 +17,80 @@ FIX (describe your package)
 
 == SYNOPSIS:
 
-  FIX (code sample of usage)
+    class Post < ActiveRecord::Base
+      publish_control
+    end
+	
+	# creating
+	@post = Post.create(params[:post])
+	
+	@post.publish!
+	
+	# With start and end dates
+	@post.update_attributes :publish_at => Time.now, :unpublish_at => 2.weeks.from_now
+	
+	# Or, in your views...
+	<% form_for @post do |f| %>
+	  ...
+	  <p>
+		<%= f.label :publisht_at, "From" %>
+		<%= f.date_select :publish_at %>
+	  </p>
+	  <p>
+		<%= f.label :unpublisht_at, "To" %>
+		<%= f.date_select :unpublish_at %>
+	  </p>
+	  ...
+	<% end %>
+	
+    # in your controllers
+    def index
+      @posts = Post.published
+    end
+
+    def show
+      @post = Post.published.find(params[:id])
+    end
+
+    # You can nest scopes:
+    @post = current_user.posts.published(params[:id])
+    
+    @posts = current_user.posts.published.paginate(:page => params[:page])
+
+    # unpublished ones
+    @posts = Post.unpublished
+
+    # All posts if logged_in?, only published otherwise
+    @posts = Post.published_only?( logged_in? ).paginate(:page => params[:page])
+    
+    # Unpublish
+    @post.unpublish!
 
 == REQUIREMENTS:
 
-* FIX (list of requirements)
+ActiveRecord
 
 == INSTALL:
 
-* FIX (sudo gem install, anything else)
+If you haven't yet, add github.com to your gem sources (you only need to do that once):
+
+    gem sources -a http://gems.github.com
+
+Now you can install the normal way:
+
+    sudo gem install ismasan-ar_publish_control
+
+Then, in your Rails app's environment:
+
+    config.gem 'ismasan-ar_publish_control',:lib => 'ar_publish_control',:source => "http://gems.github.com"
+
+...Or in Merb or elsewhere
+
+    require "ar_publish_control"
+
+If you wan to unpack the gem to you app's "vendor" directory:
+
+    rake gems:unpack
 
 == LICENSE:
 
