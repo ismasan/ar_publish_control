@@ -81,7 +81,9 @@ describe Comment do
     Comment.published_only.size.should == 2
     Comment.published_only(true).size.should == 2
     @published_post.comments.published_only(true).first.should == @published_comment_in_published_post
-    @published_post.comments.published_only(false).first.should == @unpublished_comment_in_published_post
+    @published_post.comments.published_only(true).include?(@unpublished_comment_in_published_post).should be_false
+    @published_post.comments.published_only(false).include?(@unpublished_comment_in_published_post).should be_true
+    @published_post.comments.published_only(false).include?(@published_comment_in_published_post).should be_true
   end
   
   it "should validate that unpublish_at is greater than publish_at" do

@@ -2,7 +2,7 @@ $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
 module ArPublishControl
-  VERSION = '0.0.2'
+  VERSION = '0.0.3'
   # This is a gem version of http://github.com/avdgaag/acts_as_publishable ( a Rails plugin)
   # Thanks to Avdaag for his awesome, super readable code which I ripped off for this gem.
   #
@@ -97,7 +97,7 @@ module ArPublishControl
         
         named_scope :published_only, lambda {|*args|
           bool = (args.first.nil? ? true : (args.first)) # nil = true by default
-          {:conditions => (bool ? published_conditions : unpublished_conditions)}
+          bool ? {:conditions => published_conditions} : {}
         }
         before_validation :init_publish_date # don't allow empty publish_at
         before_create :publish_by_default if options[:publish_by_default]
