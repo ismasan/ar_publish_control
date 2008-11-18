@@ -5,15 +5,15 @@ His plugin is Copyright (c) 2007 Arjan van der Gaag, released under the MIT lice
 
 = ar_publish_control
 
-* FIX (url)
+http://github.com/ismasan/ar_publish_control
 
 == DESCRIPTION:
 
-FIX (describe your package)
+Add start/end publishing dates to your ActiveRecord models.
 
 == FEATURES/PROBLEMS:
 
-* FIX (list of features or problems)
+Adds published, unpublished and published_only(boolean) named_scopes to your models.
 
 == SYNOPSIS:
 
@@ -80,6 +80,22 @@ Now you can install the normal way:
 
     sudo gem install ismasan-ar_publish_control
 
+Add the necessary fields to you schema, in a migration:
+
+    class AddPublishableToPosts < ActiveRecord::Migration
+	  def self.up
+	    add_column :posts, :publish_at, :datetime
+	    add_column :posts, :unpublish_at, :datetime
+	  end
+
+	  def self.down
+	    remove_column :posts, :publish_at
+	    remove_column :posts, :unpublish_at
+	  end
+	end
+	
+	rake db:migrate
+
 Then, in your Rails app's environment:
 
     config.gem 'ismasan-ar_publish_control',:lib => 'ar_publish_control',:source => "http://gems.github.com"
@@ -91,6 +107,16 @@ Then, in your Rails app's environment:
 If you wan to unpack the gem to you app's "vendor" directory:
 
     rake gems:unpack
+
+== TEST
+
+Test are in the spec directory (rspec). To run them, first initialize the test sqlite database
+
+    rake db:create
+
+Now you can run the specs
+
+    rake spec
 
 == LICENSE:
 
