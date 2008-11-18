@@ -33,6 +33,10 @@ Adds published, unpublished and published_only(boolean) named_scopes to your mod
 	<% form_for @post do |f| %>
 	  ...
 	  <p>
+		<%= f.label :is_published, "Publish" %>
+		<%= f.check_box :is_published %>
+	  </p>
+	  <p>
 		<%= f.label :publisht_at, "From" %>
 		<%= f.date_select :publish_at %>
 	  </p>
@@ -65,6 +69,9 @@ Adds published, unpublished and published_only(boolean) named_scopes to your mod
     
     # Unpublish
     @post.unpublish!
+    
+    # You can access the ones marked as "published" but with a publish date in the future
+    @upcoming_post = Post.upcoming
 
 == REQUIREMENTS:
 
