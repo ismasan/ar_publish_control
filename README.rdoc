@@ -118,6 +118,10 @@ Now you can run the specs
 
     rake spec
 
+== TODO
+
+Add publishing statuses "draft" and "published". Draft ones are considered unpublished regardless of the dates.
+
 == LICENSE:
 
 (The MIT License)
