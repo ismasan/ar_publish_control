@@ -21,57 +21,57 @@ Adds published, unpublished and published_only(boolean) named_scopes to your mod
       publish_control
     end
 	
-	# creating
-	@post = Post.create(params[:post])
+   # creating
+   @post = Post.create(params[:post])
 	
-	@post.publish!
+   @post.publish!
 	
-	# With start and end dates
-	@post.update_attributes :publish_at => Time.now, :unpublish_at => 2.weeks.from_now
+   # With start and end dates
+   @post.update_attributes :publish_at => Time.now, :unpublish_at => 2.weeks.from_now
 	
-	# Or, in your views...
-	<% form_for @post do |f| %>
-	  ...
-	  <p>
-		<%= f.label :is_published, "Publish" %>
-		<%= f.check_box :is_published %>
-	  </p>
-	  <p>
-		<%= f.label :publisht_at, "From" %>
-		<%= f.date_select :publish_at %>
-	  </p>
-	  <p>
-		<%= f.label :unpublisht_at, "To" %>
-		<%= f.date_select :unpublish_at %>
-	  </p>
-	  ...
-	<% end %>
+   # Or, in your views...
+   <% form_for @post do |f| %>
+     ...
+     <p>
+       <%= f.label :is_published, "Publish" %>
+       <%= f.check_box :is_published %>
+     </p>
+     <p>
+       <%= f.label :publisht_at, "From" %>
+       <%= f.date_select :publish_at %>
+     </p>
+     <p>
+       <%= f.label :unpublisht_at, "To" %>
+       <%= f.date_select :unpublish_at %>
+     </p>
+     ...
+   <% end %>
 	
-    # in your controllers
-    def index
-      @posts = Post.published
-    end
+   # in your controllers
+   def index
+     @posts = Post.published
+   end
 
-    def show
-      @post = Post.published.find(params[:id])
-    end
+   def show
+     @post = Post.published.find(params[:id])
+   end
 
-    # You can nest scopes:
-    @post = current_user.posts.published(params[:id])
+   # You can nest scopes:
+   @post = current_user.posts.published(params[:id])
     
-    @posts = current_user.posts.published.paginate(:page => params[:page])
+   @posts = current_user.posts.published.paginate(:page => params[:page])
 
-    # unpublished ones
-    @posts = Post.unpublished
+   # unpublished ones
+   @posts = Post.unpublished
 
-    # All posts if logged_in?, only published otherwise
-    @posts = Post.published_only?( logged_in? ).paginate(:page => params[:page])
+   # All posts if logged_in?, only published otherwise
+   @posts = Post.published_only?( logged_in? ).paginate(:page => params[:page])
     
-    # Unpublish
-    @post.unpublish!
+   # Unpublish
+   @post.unpublish!
     
-    # You can access the ones marked as "published" but with a publish date in the future
-    @upcoming_post = Post.upcoming
+   # You can access the ones marked as "published" but with a publish date in the future
+   @upcoming_post = Post.upcoming
 
 == REQUIREMENTS:
 
@@ -89,17 +89,18 @@ Now you can install the normal way:
 
 Add the necessary fields to you schema, in a migration:
 
-    class AddPublishableToPosts < ActiveRecord::Migration
-	  def self.up
-	    add_column :posts, :publish_at, :datetime
-	    add_column :posts, :unpublish_at, :datetime
-	  end
-
-	  def self.down
-	    remove_column :posts, :publish_at
-	    remove_column :posts, :unpublish_at
-	  end
-	end
+   class AddPublishableToPosts < ActiveRecord::Migration
+     def self.up
+       add_column :posts, :is_published, :boolean
+       add_column :posts, :publish_at, :datetime
+       add_column :posts, :unpublish_at, :datetime
+     end
+     def self.down
+       remove_column :posts, :is_published
+       remove_column :posts, :publish_at
+       remove_column :posts, :unpublish_at
+     end
+   end
 	
 	rake db:migrate
 
