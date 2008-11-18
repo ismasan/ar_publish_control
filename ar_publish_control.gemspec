@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{ar_publish_control}
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ismael Celis"]
@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{ar_publish_control}
   s.rubygems_version = %q{1.3.1}
-  s.summary = %q{Publish control for ActiveRecord, with start and optional end dat}
+  s.summary = %q{Publish control for ActiveRecord, with start and optional end dates}
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
