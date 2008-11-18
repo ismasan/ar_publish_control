@@ -9,6 +9,7 @@ class TestSchema < ActiveRecord::Migration
   def self.up
     create_table :posts do |t|
       t.string :title
+      t.boolean  :is_published
       t.datetime :publish_at
       t.datetime :unpublish_at
       t.timestamps
@@ -16,6 +17,7 @@ class TestSchema < ActiveRecord::Migration
     
     create_table :articles do |t|
       t.string :title
+      t.boolean  :is_published
       t.datetime :publish_at
       t.datetime :unpublish_at
       t.timestamps
@@ -23,6 +25,7 @@ class TestSchema < ActiveRecord::Migration
     
     create_table :comments do |t|
       t.text :body
+      t.boolean  :is_published
       t.integer :post_id
       t.datetime :publish_at
       t.datetime :unpublish_at

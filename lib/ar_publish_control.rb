@@ -91,14 +91,16 @@ module ArPublishControl
         return if self.included_modules.include?(ArPublishControl::Publishable::InstanceMethods)
         send :include, ArPublishControl::Publishable::InstanceMethods
         
-        named_scope :published, :conditions => published_conditions
-        named_scope :unpublished, :conditions => unpublished_conditions
+        named_scope :published, lambda{{:conditions => published_conditions}}
+        named_scope :unpublished, lambda{{:conditions => unpublished_conditions}}
+        named_scope :upcoming, lambda{{:conditions => upcoming_conditions}}
         
         named_scope :published_only, lambda {|*args|
           bool = (args.first.nil? ? true : (args.first)) # nil = true by default
           {:conditions => (bool ? published_conditions : unpublished_conditions)}
         }
-        before_create :set_default_publication_date if options[:publish_by_default]
+        before_validation :init_publish_date # don't allow empty publish_at
+        before_create :publish_by_default if options[:publish_by_default]
       end
       
       # Takes a block whose containing SQL queries are limited to
@@ -118,26 +120,39 @@ module ArPublishControl
       # returns a string for use in SQL to filter the query to unpublished results only
       # Meant for internal use only
       def unpublished_conditions
-        "(#{table_name}.publish_at IS NULL OR #{table_name}.publish_at > '#{Time.now.to_s(:db)}') OR (#{table_name}.unpublish_at IS NOT NULL AND #{table_name}.unpublish_at < '#{Time.now.to_s(:db)}')"
+        t = Time.now
+        ["(#{table_name}.is_published = ? OR #{table_name}.publish_at > ?) OR (#{table_name}.unpublish_at IS NOT NULL AND #{table_name}.unpublish_at < ?)",false,t,t]
       end
       
       # return a string for use in SQL to filter the query to published results only
       # Meant for internal use only
       def published_conditions
-        "(#{table_name}.publish_at IS NOT NULL AND #{table_name}.publish_at <= '#{Time.now.to_s(:db)}') AND (#{table_name}.unpublish_at IS NULL OR #{table_name}.unpublish_at > '#{Time.now.to_s(:db)}')"
+        t = Time.now
+        ["(#{table_name}.is_published = ? AND #{table_name}.publish_at <= ?) AND (#{table_name}.unpublish_at IS NULL OR #{table_name}.unpublish_at > ?)",true,t,t]
+      end
+      
+      def upcoming_conditions
+        t = Time.now
+        ["(#{table_name}.is_published = ? AND #{table_name}.publish_at > ?)",true,t]
       end
     end
     
     module InstanceMethods
       
-      # ActiveRecrod callback fired on +after_create+ to make 
-      # sure a new object always gets a publication date; if 
-      # none is supplied it defaults to the creation date.
-      def set_default_publication_date
+      # Publish at is NOW if not set
+      def init_publish_date
         write_attribute(:publish_at, Time.now) if publish_at.nil?
       end
       
+      # ActiveRecrod callback fired on +before_create+ to make 
+      # sure a new object always gets a publication date; if 
+      # none is supplied it defaults to the creation date.
+      def publish_by_default
+        write_attribute(:is_published, true) if is_published.nil?
+      end
+      
       # Validate that unpublish_at is greater than publish_at
+      # publish_at must not be nil
       def validate
         if unpublish_at && publish_at && unpublish_at <= publish_at
           errors.add(:unpublish_at,"should be greater than publication date or empty")
@@ -148,12 +163,17 @@ module ArPublishControl
       
       # Return whether the current object is published or not
       def published?
-        (!publish_at.nil? && (publish_at <=> Time.now) <= 0) && (unpublish_at.nil? || (unpublish_at <=> Time.now) >= 0)
+        (is_published? && (publish_at <=> Time.now) <= 0) && (unpublish_at.nil? || (unpublish_at <=> Time.now) >= 0)
+      end
+      
+      def upcoming?
+        (is_published? && publish_at > Time.now)
       end
       
       # Indefinitely publish the current object right now
       def publish
         return if published?
+        self.is_published = true
         self.publish_at = Time.now
         self.unpublish_at = nil
       end
@@ -168,7 +188,7 @@ module ArPublishControl
       # Immediatly unpublish the current object
       def unpublish
         return unless published?
-        self.unpublish_at = 1.minute.ago
+        self.is_published = false
       end
       
       # Same as unpublish, but immediatly saves the object.

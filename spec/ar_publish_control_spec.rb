@@ -91,11 +91,6 @@ describe Comment do
     @published_comment_in_published_post.errors.on(:unpublish_at).should == "should be greater than publication date or empty"
   end
   
-  it "should unpublish if publish_at is nil" do
-    @published_post.update_attributes :publish_at => nil
-    @published_post.published?.should be_false
-    Post.published.size.should == 0
-  end
 end
 
 # describe Post, 'with no dates' do
@@ -121,5 +116,29 @@ describe Post, "unpublished by default" do
   
   it "should be unpublished by default" do
     @a1.published?.should_not be_true
+    Article.published.size.should == 0
+  end
+  
+  it "should publish" do
+    @a1.publish!
+    @a1.published?.should be_true
+  end
+end
+
+describe Post, 'upcoming' do
+  before(:each) do
+    Post.destroy_all
+    @p1 = Post.create(:title => 'p1',:is_published => true,:publish_at => 1.day.from_now) #upcoming
+    @p2 = Post.create(:title => 'p2',:is_published => true,:publish_at => 1.week.from_now)#upcoming
+    @p3 = Post.create(:title => 'p3',:is_published => false,:publish_at => 1.day.from_now)#unpublished
+    @p4 = Post.create(:title => 'p4',:is_published => true)#published
+  end
+  
+  it "should have upcoming" do
+    @p1.upcoming?.should be_true
+    @p2.upcoming?.should be_true
+    @p3.upcoming?.should be_false
+    @p4.upcoming?.should be_false
+    Post.upcoming.size.should == 2
   end
 end

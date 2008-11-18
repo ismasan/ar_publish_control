@@ -14,7 +14,7 @@ ActiveRecord::Base.establish_connection(
   :dbfile=> File.join(File.dirname(__FILE__),'db','test.db')
 )
 
-ActiveRecord::Base.connection.query_cache_enabled = false
+#ActiveRecord::Base.connection.query_cache_enabled = false
 
 LOGGER = Logger.new(File.dirname(__FILE__)+'/log/test.log')
 ActiveRecord::Base.logger = LOGGER
