@@ -90,6 +90,12 @@ describe Comment do
     @published_comment_in_published_post.should_not be_valid
     @published_comment_in_published_post.errors.on(:unpublish_at).should == "should be greater than publication date or empty"
   end
+  
+  it "should unpublish if publish_at is nil" do
+    @published_post.update_attributes :publish_at => nil
+    @published_post.published?.should be_false
+    Post.published.size.should == 0
+  end
 end
 
 # describe Post, 'with no dates' do
