@@ -78,7 +78,7 @@ Adds published, unpublished and published_only(boolean) named_scopes to your mod
    @expired_posts = Post.expired
    @expired_posts.first.expired? # => true
 
-All of these named_scopes can be chain with other finder conditions and paginated with will_paginate
+All of these named_scopes can be chained with other finder conditions and paginated with will_paginate
 
 == REQUIREMENTS:
 
