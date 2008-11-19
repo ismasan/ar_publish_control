@@ -94,6 +94,7 @@ module ArPublishControl
         named_scope :published, lambda{{:conditions => published_conditions}}
         named_scope :unpublished, lambda{{:conditions => unpublished_conditions}}
         named_scope :upcoming, lambda{{:conditions => upcoming_conditions}}
+        named_scope :expired, lambda {{:conditions => expired_conditions}}
         
         named_scope :published_only, lambda {|*args|
           bool = (args.first.nil? ? true : (args.first)) # nil = true by default
@@ -135,6 +136,11 @@ module ArPublishControl
         t = Time.now
         ["(#{table_name}.is_published = ? AND #{table_name}.publish_at > ?)",true,t]
       end
+      
+      def expired_conditions
+        t = Time.now
+        ["(#{table_name}.unpublish_at IS NOT NULL AND #{table_name}.unpublish_at < ?)",t]
+      end
     end
     
     module InstanceMethods
@@ -168,6 +174,10 @@ module ArPublishControl
       
       def upcoming?
         (is_published? && publish_at > Time.now)
+      end
+      
+      def expired?
+        (!unpublish_at.nil? && unpublish_at < Time.now)
       end
       
       # Indefinitely publish the current object right now
