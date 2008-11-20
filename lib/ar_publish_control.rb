@@ -2,7 +2,7 @@ $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
 module ArPublishControl
-  VERSION = '0.0.4'
+  VERSION = '0.0.5'
   # This is a gem version of http://github.com/avdgaag/acts_as_publishable ( a Rails plugin)
   # Thanks to Avdaag for his awesome, super readable code which I ripped off for this gem.
   #
