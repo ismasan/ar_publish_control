@@ -37,11 +37,11 @@ Adds published, unpublished and published_only(boolean) named_scopes to your mod
        <%= f.check_box :is_published %>
      </p>
      <p>
-       <%= f.label :publisht_at, "From" %>
+       <%= f.label :publish_at, "From" %>
        <%= f.date_select :publish_at %>
      </p>
      <p>
-       <%= f.label :unpublisht_at, "To" %>
+       <%= f.label :unpublish_at, "To" %>
        <%= f.date_select :unpublish_at %>
      </p>
      ...
@@ -54,6 +54,7 @@ Adds published, unpublished and published_only(boolean) named_scopes to your mod
 
    def show
      @post = Post.published.find(params[:id])
+     @post.published? # => true
    end
 
    # You can nest scopes:
@@ -65,10 +66,11 @@ Adds published, unpublished and published_only(boolean) named_scopes to your mod
    @posts = Post.unpublished
 
    # All posts if logged_in?, only published otherwise
-   @posts = Post.published_only?( logged_in? ).paginate(:page => params[:page])
+   @posts = Post.published_only?( !logged_in? ).paginate(:page => params[:page])
     
    # Unpublish
    @post.unpublish!
+   @post.unpublished? # => true
     
    # You can access the ones marked as "published" but with a publish date in the future
    @upcoming_post = Post.upcoming
