@@ -160,3 +160,12 @@ describe Post, 'expired' do
     Post.expired.size.should == 2
   end
 end
+
+describe "new record" do
+  it "should default to Time.now" do
+    d = Time.now
+    Time.stub!(:now).and_return d
+    a = Article.new
+    a.publish_at.should == d
+  end
+end

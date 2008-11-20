@@ -145,6 +145,10 @@ module ArPublishControl
     
     module InstanceMethods
       
+      def publish_at
+        read_attribute(:publish_at) || Time.now
+      end
+      
       # Publish at is NOW if not set
       def init_publish_date
         write_attribute(:publish_at, Time.now) if publish_at.nil?
