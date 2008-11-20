@@ -37,11 +37,11 @@ Adds published, unpublished and published_only(boolean) named_scopes to your mod
        <%= f.check_box :is_published %>
      </p>
      <p>
-       <%= f.label :publisht_at, "From" %>
+       <%= f.label :publish_at, "From" %>
        <%= f.date_select :publish_at %>
      </p>
      <p>
-       <%= f.label :unpublisht_at, "To" %>
+       <%= f.label :unpublish_at, "To" %>
        <%= f.date_select :unpublish_at %>
      </p>
      ...
