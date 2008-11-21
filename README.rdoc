@@ -100,7 +100,7 @@ Add the necessary fields to you schema, in a migration:
 
    class AddPublishableToPosts < ActiveRecord::Migration
      def self.up
-       add_column :posts, :is_published, :boolean
+       add_column :posts, :is_published, :boolean, :default => true
        add_column :posts, :publish_at, :datetime
        add_column :posts, :unpublish_at, :datetime
      end
