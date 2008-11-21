@@ -2,7 +2,7 @@ $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
 module ArPublishControl
-  VERSION = '0.0.6'
+  VERSION = '0.0.7'
   # This is a gem version of http://github.com/avdgaag/acts_as_publishable ( a Rails plugin)
   # Thanks to Avdaag for his awesome, super readable code which I ripped off for this gem.
   #
@@ -100,7 +100,7 @@ module ArPublishControl
           bool = (args.first.nil? ? true : (args.first)) # nil = true by default
           bool ? {:conditions => published_conditions} : {}
         }
-        before_validation :init_publish_date # don't allow empty publish_at
+        
         validate :validate_publish_date_consistency
         before_create :publish_by_default if options[:publish_by_default]
       end
@@ -146,12 +146,7 @@ module ArPublishControl
     
     module InstanceMethods
       
-      def publish_at
-        read_attribute(:publish_at) || Time.now
-      end
-      
-      # Publish at is NOW if not set
-      def init_publish_date
+      def after_initialize
         write_attribute(:publish_at, Time.now) if publish_at.nil?
       end
       
