@@ -103,6 +103,8 @@ Add the necessary fields to you schema, in a migration:
        add_column :posts, :is_published, :boolean, :default => true
        add_column :posts, :publish_at, :datetime
        add_column :posts, :unpublish_at, :datetime
+       # update existing records if you have them
+       Post.update_all "publish_at = created_at"
      end
      def self.down
        remove_column :posts, :is_published
@@ -111,7 +113,7 @@ Add the necessary fields to you schema, in a migration:
      end
    end
 	
-	rake db:migrate
+   rake db:migrate
 
 Then, in your Rails app's environment:
 
