@@ -110,10 +110,13 @@ describe Post, "unpublished by default" do
   before(:each) do
     Article.destroy_all
     @a1 = Article.create(:title=>'a1')
+    @invalid = Article.create(:title=>'a2', :publish_at => '')
   end
   
   it "should be valid" do
     @a1.should be_valid
+    @a1.publish_at.should_not be_nil
+    @invalid.publish_at.should_not be_blank
   end
   
   it "should be unpublished by default" do
