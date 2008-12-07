@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/spec_helper.rb'
 
 describe ArPublishControl do
   it "should have array of available statuses" do
-    (ArPublishControl::STATUSES == [:published, :unpublished, :upcoming, :expired]).should be_true
+    (ArPublishControl::STATUSES == [:published, :draft, :upcoming, :expired]).should be_true
   end
 end
 
@@ -167,6 +167,20 @@ describe Post, 'expired' do
     @p2.expired?.should be_true
     @p3.expired?.should be_true
     Post.expired.size.should == 2
+  end
+end
+
+describe Post, 'draft' do
+  before(:each) do
+    Post.destroy_all
+    @p1 = Post.create(:title => 'p1',:is_published => true,:publish_at => 2.weeks.ago) #published
+    @p2 = Post.create(:title => 'p2',:is_published => true,:publish_at => 2.weeks.ago,:unpublish_at => 1.day.ago)#expired
+    @p3 = Post.create(:title => 'p3',:is_published => false,:publish_at => 3.days.ago,:unpublish_at => 2.hours.ago)#unpublished and expired
+  end
+  
+  it "should have draft" do
+    Post.draft.count.should == 1
+    Post.draft.first.should == @p3
   end
 end
 

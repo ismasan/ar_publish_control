@@ -76,9 +76,12 @@ Adds published, unpublished and published_only(boolean) named_scopes to your mod
    @upcoming_post = Post.upcoming
    @upcoming_post.first.upcoming? # => true
 
-   # Finally, you can fetch objects that have expired (ie. they have an unpublish_at date set in the past)
+   # You can fetch objects that have expired (ie. they have an unpublish_at date set in the past)
    @expired_posts = Post.expired
    @expired_posts.first.expired? # => true
+
+   # Finally, if you want those objects where is_published == false, regardless of dates
+   @drafts = Post.draft
 
 All of these named_scopes can be chained with other finder conditions and paginated with will_paginate
 
