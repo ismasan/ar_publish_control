@@ -1,5 +1,11 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 
+describe ArPublishControl do
+  it "should have array of available statuses" do
+    (ArPublishControl::STATUSES == [:published, :unpublished, :upcoming, :expired]).should be_true
+  end
+end
+
 describe Comment do
   before(:each) do
     Post.destroy_all
